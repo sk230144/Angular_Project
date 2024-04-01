@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html ng-app="userApp">
+
+<head>
+  <title>User Cards</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div ng-controller="UserController" class="container">
+ 
+    <input type="text" ng-model="searchName" placeholder="Search by name">
+    
+   
+    <select ng-model="selectedGender" ng-options="gender for gender in genders" ng-change="applyFilters()">
+      <option value="">All Genders</option>
+    </select>
+    
+    <!-- Availability filter dropdown -->
+    <select ng-model="selectedAvailability" ng-options="availability.label for availability in availabilities" ng-change="applyFilters()">
+      <option value="">All Availabilities</option>
+    </select>
+    
+    <!-- Domain filter dropdown -->
+    <select ng-model="selectedDomain" ng-options="domain for domain in domains" ng-change="applyFilters()">
+      <option value="">All Domains</option>
+    </select>
+    
+    <!-- Create Team button -->
+    <button ng-click="createTeam()" ng-disabled="selectedUsers.length === 0">Create Team</button>
+    
+    <!-- Selected Users -->
+    <h4>Selected Users:</h4>
+    <ul>
+      <li ng-repeat="user in selectedUsers">{{ user.first_name }} {{ user.last_name }}</li>
+    </ul>
+
+    <div ng-if="teamDetails" class="team-details">
+        <h3>Team Details</h3>
+        <ul>
+          <li ng-repeat="user in teamDetails.users">
+            {{ user.first_name }} {{ user.last_name }} - {{ user.domain }} ({{ user.available ? 'Available' : 'Not Available' }})
+          </li>
+        </ul>
+      </div>
+      
+    
+    <!-- User Cards -->
+    <div class="card-deck">
+        <div class="card" ng-repeat="user in (filteredUsers | filter: {first_name: searchName} | filter: {gender: selectedGender} | filter: {available: selectedAvailability.value} | filter: {domain: selectedDomain})" ng-click="toggleUserSelection(user)" ng-class="{ 'selected': isUserSelected(user) }">
+          <img ng-src="{{ user.avatar }}" class="card-img-top" alt="User Avatar">
+          <div class="card-body">
+            <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+            <p class="card-text">Email: {{ user.email }}</p>
+            <p class="card-text">Gender: {{ user.gender }}</p>
+            <p class="card-text">Domain: {{ user.domain }}</p>
+            <p class="card-text">Available: {{ user.available ? 'Yes' : 'No' }}</p>
+          </div>
+        </div>
+      </div>
+      
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
